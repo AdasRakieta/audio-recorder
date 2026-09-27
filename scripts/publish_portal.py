@@ -146,13 +146,13 @@ a.secondary {{background:#e8edf7;color:#244887}} a {{color:#244f9e}} code {{word
 @media(prefers-color-scheme:dark) {{body {{background:#101522;color:#ecf0fa}} .lead,.meta,.note {{color:#b0bfdb}} .card {{background:#1a2233;border-color:#32405b;box-shadow:none}} a {{color:#a7c5ff}} a.secondary {{background:#2b3c5a;color:#c8dcff}} .eyebrow {{color:#b0bfdb}}}}
 </style></head><body><main>
 <div class="top"><img class="icon" src="icon.png" alt=""><div><div class="eyebrow">Prywatna dystrybucja</div><h1>Recorder Probe</h1></div></div>
-<p class="lead">Prototyp testowy nagrywania dźwięku na iPadzie. Wydania są dostępne tylko przez Twoją sieć Tailscale.</p>
+<p class="lead">Prototyp testowy nagrywania dźwięku na iPadzie. Wydania są dostępne przez Twoją prywatną sieć.</p>
 <section class="card"><h2>Aktualne wydanie</h2><p class="meta">Wersja {html.escape(version)} · build {html.escape(build)} · iPadOS 27 lub nowszy · {ipa.stat().st_size / 1024:.0f} KB</p>
 <div class="actions">{buttons}</div>
 <p class="note">SHA-256: <code>{digest}</code> · <a href="releases/{name}.sha256">plik sumy</a></p></section>
 <section class="card"><h2>Instalacja</h2><ol>{instructions}</ol>
 <p class="note">{network_note} Malina nie podpisuje aplikacji. <a href="https://github.com/AdasRakieta/audio-recorder/blob/main/docs/TEST_NA_IPADZIE.md">Dokładna instrukcja i plan testów</a>.</p></section>
-<section class="card"><h2>Stan prototypu</h2><p>Nie potwierdzono jeszcze na fizycznym iPadzie, czy nagrywanie przechwytuje głos rozmówcy Teams ani czy SideStore zainstaluje i odnowi tę aplikację na iPadOS 27.</p></section>
+<section class="card"><h2>Stan prototypu</h2><p>Instalacja przez SideStore została wykonana. Nadal trzeba sprawdzić odnowienie podpisu oraz zapis głosu drugiego uczestnika podczas zwykłego spotkania Teams. Test połączenia z autosekretarką dał ciszę także we wbudowanym nagrywaniu ekranu iPada.</p></section>
 </main></body></html>'''
     atomic_write(output / "index.html", page.encode())
 
