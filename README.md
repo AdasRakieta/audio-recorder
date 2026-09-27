@@ -21,6 +21,19 @@ Na Windows AltServer jest już zainstalowany. Najprostsza próba bez logowania s
 
 Gdy test nagrywania przejdzie, można rozważyć odświeżanie przez SideStore, które nie wymaga logowania do konta iCloud urządzenia, lecz wymaga zalogowania konta podpisującego wewnątrz SideStore na iPadzie. Nie zakładamy, że jest to możliwe w obecnym układzie kont. Jeśli instalacja lub podpisanie się nie uda, zapisz dokładny komunikat — to część testu wykonalności.
 
+## Prywatna strona wydań na malinie
+
+Skrypt `scripts/publish_portal.py` sprawdza metadane IPA, kopiuje je pod nazwą z numerem wersji, oblicza SHA-256 i tworzy responsywną stronę oraz źródło aktualizacji zgodne z SideStore/AltStore Classic. Na malinie:
+
+```sh
+python3 scripts/publish_portal.py RecorderProbe-unsigned.ipa /home/adas.rakieta/audio-recorder-distribution \
+  --base-url https://malina.tail384b18.ts.net:8444
+```
+
+Katalog jest już wystawiony przez Tailscale Serve wyłącznie w tailnecie. Strona: `https://malina.tail384b18.ts.net:8444/`; źródło: `/source.json`. Dla każdej nowej wersji trzeba zwiększyć `MARKETING_VERSION` lub `CURRENT_PROJECT_VERSION` w `project.yml`, zbudować IPA i uruchomić skrypt ponownie. Historia wersji pozostaje w źródle, a powtórzenie publikacji tej samej wersji z inną zawartością zostaje odrzucone.
+
+Przycisk strony otwiera źródło w SideStore. **Plik na serwerze jest niepodpisany**: SideStore pobiera go i podpisuje dla urządzenia. Safari nie instaluje IPA po samym pobraniu. SideStore wymaga własnej instalacji początkowej przez komputer oraz zalogowania konta Apple używanego do podpisu wewnątrz SideStore; nie wymaga zmiany konta iCloud iPada. Instalacja, aktualizacja i odświeżenie podpisu wymagają działającego LocalDevVPN. Odświeżenie co 7 dni wykonuje SideStore na iPadzie, nie strona maliny. Automatyczne odświeżanie w tle jest próbą, więc przed upływem terminu trzeba sprawdzać licznik w SideStore. Zgodność tego przepływu z iPadOS 27 pozostaje do sprawdzenia na urządzeniu.
+
 ## Przebieg testu
 
 1. Zainstaluj prototyp na iPadzie 10. generacji z iPadOS 27. Uruchom go i dotknij **Wybierz ekran i rozpocznij**. W systemowym oknie wybierz **cały ekran**; mikrofon na początek zostaw wyłączony.

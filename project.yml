@@ -19,6 +19,8 @@ targets:
       path: RecorderProbe/Info.plist
       properties:
         CFBundleDisplayName: Recorder Probe
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSMicrophoneUsageDescription: Record your microphone only when you enable it in the system picker.
         UIBackgroundModes:
           - screen-capture
@@ -31,5 +33,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.audiorecorder.probe
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""
