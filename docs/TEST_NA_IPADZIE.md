@@ -67,7 +67,7 @@ Na tym iPadzie aktywowanie LocalDevVPN wyłącza Tailscale. SideStore wymaga Loc
 
 ## 4. Test nagrywania Teams
 
-Zrób krótką, umówioną rozmowę testową z drugą osobą i upewnij się, że nagrywanie jest dozwolone. Nie zaczynaj od sześciogodzinnego wykładu. Po każdym teście zatrzymaj zapis w aplikacji, wyeksportuj pliki i **odsłuchaj je**. Licznik próbek nie dowodzi, że zapisano głos rozmówcy.
+Zrób krótkie **zwykłe spotkanie Teams** z drugą osobą lub dołącz do niego z telefonu Android jako drugi uczestnik. Nie używaj połączenia z autosekretarką jako rozstrzygającego testu wykładów: podczas takiego połączenia także wbudowane nagrywanie ekranu iPada dało ciszę. Upewnij się, że nagrywanie spotkania jest dozwolone. Nie zaczynaj od sześciogodzinnego wykładu. Po każdym teście zatrzymaj zapis w aplikacji, wyeksportuj pliki i **odsłuchaj je**. Licznik próbek nie dowodzi, że zapisano głos rozmówcy.
 
 | Próba | Ustawienie | Spodziewany materiał do sprawdzenia |
 | --- | --- | --- |
@@ -79,12 +79,14 @@ Zrób krótką, umówioną rozmowę testową z drugą osobą i upewnij się, że
 Dla każdej próby:
 
 1. Otwórz **Recorder Probe** i dotknij **Wybierz ekran i rozpocznij**.
-2. W systemowym oknie wybierz **cały ekran**. Przełącznik mikrofonu ustaw zgodnie z próbą. Wróć do Teams i prowadź rozmowę 30–60 sekund.
+2. W systemowym oknie rozpocznij przechwytywanie **całego ekranu**. Napis „Recorder Probe” oznacza odbiorcę nagrania, nie listę aplikacji źródłowych. Nie da się tu wybrać samego Teams. Przełącznik mikrofonu ustaw zgodnie z próbą. Wróć do Teams i prowadź spotkanie 30–60 sekund.
 3. Wróć do Recorder Probe i dotknij **Zakończ i zapisz**. Poczekaj na stan **Zakończono**. Jeśli widać **Przerwano**, **Nie rozpoczęto** albo sekcję **Błąd**, zapisz komunikat.
 4. W sekcji **Ostatni test** użyj **Udostępnij dźwięk aplikacji**, **Udostępnij mikrofon** i **Udostępnij raport**. Zapisz pliki w aplikacji **Pliki**. Każdy plik zaczyna się od daty i godziny rozpoczęcia, np. `2026_09_27_21_15_04_system.m4a`, `2026_09_27_21_15_04_microphone.m4a` i `2026_09_27_21_15_04_report.json`. Nagrania z tej samej sekundy otrzymują dodatkowy numer.
 5. Odsłuchaj każdy plik przez słuchawki. W pliku `_report.json` sprawdź `status`, liczbę próbek i `errors`. Zanotuj, czy słychać rozmówcę, własny mikrofon, ciszę, trzaski lub przerwy.
 
 Przetestuj osobno zablokowanie ekranu i przerwanie rozmowy. Obecny prototyp nie jest jeszcze odpornym rejestratorem segmentowym: sześciogodzinna sesja, odzyskanie po zamknięciu aplikacji i brak miejsca **nie są** gotowymi funkcjami. Najpierw musimy potwierdzić podstawową jakość audio i podpisywanie.
+
+Dla porównania wykonaj drugi test tego samego zwykłego spotkania przez **Nagrywanie ekranu** z Centrum sterowania iPada z wyłączonym mikrofonem i odsłuchaj film w Zdjęciach. Jeśli oba sposoby zapiszą ciszę podczas wypowiedzi drugiego uczestnika, przechwytywanie głosu Teams jest prawdopodobnie ograniczone przez system lub Teams. Wtedy nie uruchamiamy transkrypcji pustego pliku: zgodnie z warunkiem wykonalności projektu trzeba wybrać inne źródło audio.
 
 ## 5. Odświeżenie podpisu i aktualizacja
 
