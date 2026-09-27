@@ -4,6 +4,7 @@
 import argparse
 import hashlib
 import html
+import ipaddress
 import json
 import os
 import plistlib
@@ -21,6 +22,7 @@ def atomic_write(path: Path, data: bytes) -> None:
     with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as out:
         out.write(data)
         temporary = Path(out.name)
+    temporary.chmod(0o644)
     os.replace(temporary, path)
 
 
@@ -34,8 +36,19 @@ def package_info(ipa: Path) -> dict:
 
 def publish(ipa: Path, output: Path, base_url: str) -> None:
     parsed = urllib.parse.urlparse(base_url)
-    if parsed.scheme != "https" or not parsed.netloc or parsed.query or parsed.fragment:
-        raise ValueError("base URL must be an HTTPS directory URL")
+    if not parsed.netloc or parsed.query or parsed.fragment or parsed.username or parsed.password:
+        raise ValueError("base URL must be a directory URL without credentials or query")
+    is_lan = parsed.scheme == "http"
+    if is_lan:
+        try:
+            address = ipaddress.IPv4Address(parsed.hostname)
+        except (ipaddress.AddressValueError, TypeError) as error:
+            raise ValueError("HTTP requires an RFC1918 IPv4 address") from error
+        local_ranges = ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")
+        if not any(address in ipaddress.IPv4Network(network) for network in local_ranges):
+            raise ValueError("HTTP is allowed only on a private LAN address")
+    elif parsed.scheme != "https":
+        raise ValueError("base URL must use HTTPS or private-LAN HTTP")
     base_url = base_url.rstrip("/")
     info = package_info(ipa)
     bundle = info["CFBundleIdentifier"]
@@ -108,6 +121,14 @@ def publish(ipa: Path, output: Path, base_url: str) -> None:
     shutil.copyfile(Path(__file__).with_name("icon.png"), output / "icon.png")
     source_link = "sidestore://source?url=" + urllib.parse.quote(base_url + "/source.json", safe="")
     install_link = "sidestore://install?url=" + urllib.parse.quote(download_url, safe="")
+    if is_lan:
+        buttons = f'''<a class="button" href="{html.escape(source_link, quote=True)}">Dodaj źródło w SideStore</a><a class="button secondary" href="{html.escape(install_link, quote=True)}">Zainstaluj w SideStore</a><a class="button secondary" href="releases/{name}" download>Pobierz IPA do Plików</a>'''
+        instructions = '''<li>Połącz iPada z domowym Wi-Fi i włącz LocalDevVPN. Tailscale może pozostać wyłączony.</li><li>Dodaj źródło w SideStore i wybierz Recorder Probe. SideStore powinno pobrać IPA przez sieć domową.</li><li>Jeśli pobieranie z URL zawiedzie, pobierz IPA do Plików i wybierz je przez SideStore → My Apps → +.</li><li>Przed końcem 7 dni odśwież podpis w SideStore przy włączonym LocalDevVPN.</li>'''
+        network_note = "To źródło działa tylko w domowym Wi-Fi. Lokalny HTTP służy wyłącznie do dystrybucji niepodpisanego prototypu; zgodność z SideStore wymaga testu na iPadzie."
+    else:
+        buttons = f'''<a class="button" href="releases/{name}" download>Pobierz IPA do Plików</a><a class="button secondary" href="{html.escape(source_link, quote=True)}">Dodaj źródło w SideStore</a><a class="button secondary" href="{html.escape(install_link, quote=True)}">Otwórz IPA w SideStore</a>'''
+        instructions = '''<li>Włącz Tailscale i pobierz IPA z tej strony. Zachowaj plik w aplikacji Pliki.</li><li>Przełącz z Tailscale na LocalDevVPN, pozostaw Wi-Fi włączone.</li><li>W SideStore otwórz My Apps → + i wybierz pobrany IPA z Plików. SideStore podpisze go i zainstaluje.</li><li>Przed końcem 7 dni odśwież podpis w SideStore przy włączonym LocalDevVPN.</li>'''
+        network_note = "Na tym iPadzie Tailscale i LocalDevVPN nie działają jednocześnie, więc przyciski źródła i instalacji z URL mogą nie pobrać pliku w SideStore."
     page = f'''<!doctype html>
 <html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark"><title>Recorder Probe · wydania</title>
@@ -125,10 +146,10 @@ a.secondary {{background:#e8edf7;color:#244887}} a {{color:#244f9e}} code {{word
 <div class="top"><img class="icon" src="icon.png" alt=""><div><div class="eyebrow">Prywatna dystrybucja</div><h1>Recorder Probe</h1></div></div>
 <p class="lead">Prototyp testowy nagrywania dźwięku na iPadzie. Wydania są dostępne tylko przez Twoją sieć Tailscale.</p>
 <section class="card"><h2>Aktualne wydanie</h2><p class="meta">Wersja {html.escape(version)} · build {html.escape(build)} · iPadOS 27 lub nowszy · {ipa.stat().st_size / 1024:.0f} KB</p>
-<div class="actions"><a class="button" href="releases/{name}" download>Pobierz IPA do Plików</a><a class="button secondary" href="{html.escape(source_link, quote=True)}">Dodaj źródło w SideStore</a><a class="button secondary" href="{html.escape(install_link, quote=True)}">Otwórz IPA w SideStore</a></div>
+<div class="actions">{buttons}</div>
 <p class="note">SHA-256: <code>{digest}</code> · <a href="releases/{name}.sha256">plik sumy</a></p></section>
-<section class="card"><h2>Instalacja w dwóch krokach</h2><ol><li>Włącz Tailscale i pobierz IPA z tej strony. Zachowaj plik w aplikacji Pliki.</li><li>Przełącz z Tailscale na LocalDevVPN, pozostaw Wi-Fi włączone.</li><li>W SideStore otwórz My Apps → + i wybierz pobrany IPA z Plików. SideStore podpisze go i zainstaluje.</li><li>Przed końcem 7 dni odśwież podpis w SideStore przy włączonym LocalDevVPN. Sprawdzaj licznik.</li></ol>
-<p class="note">Na tym iPadzie Tailscale i LocalDevVPN nie działają jednocześnie, więc przyciski źródła i instalacji z URL mogą nie pobrać pliku w SideStore. Malina nie podpisuje aplikacji. <a href="https://github.com/AdasRakieta/audio-recorder/blob/main/docs/TEST_NA_IPADZIE.md">Dokładna instrukcja i plan testów</a>.</p></section>
+<section class="card"><h2>Instalacja</h2><ol>{instructions}</ol>
+<p class="note">{network_note} Malina nie podpisuje aplikacji. <a href="https://github.com/AdasRakieta/audio-recorder/blob/main/docs/TEST_NA_IPADZIE.md">Dokładna instrukcja i plan testów</a>.</p></section>
 <section class="card"><h2>Stan prototypu</h2><p>Nie potwierdzono jeszcze na fizycznym iPadzie, czy nagrywanie przechwytuje głos rozmówcy Teams ani czy SideStore zainstaluje i odnowi tę aplikację na iPadOS 27.</p></section>
 </main></body></html>'''
     atomic_write(output / "index.html", page.encode())

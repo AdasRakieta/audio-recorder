@@ -1,0 +1,9 @@
+services:
+  audio-release-lan:
+    image: nginx:alpine
+    container_name: audio-release-lan
+    restart: unless-stopped
+    ports:
+      - "192.168.1.218:8088:80"
+    volumes:
+      - /home/adas.rakieta/audio-recorder-distribution-lan:/usr/share/nginx/html/audio:ro

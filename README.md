@@ -30,7 +30,16 @@ python3 scripts/publish_portal.py RecorderProbe-unsigned.ipa /home/adas.rakieta/
 
 Katalog jest już wystawiony przez Tailscale Serve wyłącznie w tailnecie. Strona: `https://malina.tail384b18.ts.net/audio/`; źródło: `https://malina.tail384b18.ts.net/audio/source.json`. Dla każdej nowej wersji trzeba zwiększyć `MARKETING_VERSION` lub `CURRENT_PROJECT_VERSION` w `project.yml`, zbudować IPA i uruchomić skrypt ponownie. Historia wersji pozostaje w źródle, a powtórzenie publikacji tej samej wersji z inną zawartością zostaje odrzucone.
 
-**Plik na serwerze jest niepodpisany**: SideStore podpisuje go dla urządzenia. Safari nie instaluje IPA po samym pobraniu. SideStore wymaga własnej instalacji początkowej przez komputer oraz zalogowania konta Apple używanego do podpisu wewnątrz SideStore; nie wymaga zmiany konta iCloud iPada. Instalacja, aktualizacja i odświeżenie podpisu wymagają LocalDevVPN. Na docelowym iPadzie LocalDevVPN wyłącza Tailscale, dlatego praktyczna ścieżka to: pobrać IPA z maliny przez Tailscale do Plików, przełączyć na LocalDevVPN i zaimportować IPA przez **SideStore → My Apps → +**. Źródło `source.json` jest przygotowane, ale automatyczna instalacja i aktualizacja z prywatnego URL nie działa w tej konfiguracji dwóch VPN. Odświeżenie co 7 dni wykonuje SideStore na iPadzie, nie strona maliny. Automatyczne odświeżanie w tle jest próbą, więc przed upływem terminu trzeba sprawdzać licznik w SideStore. Zgodność instalacji i nagrywania z iPadOS 27 pozostaje do sprawdzenia na urządzeniu.
+Osobny kontener z `deployment/compose.lan.yml` udostępnia wydania w domowym Wi-Fi pod `http://192.168.1.218:8088/audio/` i lokalne źródło `http://192.168.1.218:8088/audio/source.json`. Kontener nasłuchuje tylko na adresie LAN maliny. To test obejścia konfliktu Tailscale/LocalDevVPN na iPadzie: przy włączonym LocalDevVPN SideStore powinno móc pobrać IPA po Wi-Fi. Repozytorium SideStore deklaruje dopuszczenie HTTP, ale faktyczną instalację i aktualizację trzeba sprawdzić na urządzeniu. Publikowanie nowej wersji wymaga wygenerowania **obu** katalogów:
+
+```sh
+python3 scripts/publish_portal.py RecorderProbe-unsigned.ipa /home/adas.rakieta/audio-recorder-distribution-lan \
+  --base-url http://192.168.1.218:8088/audio
+```
+
+Kontener został uruchomiony na malinie przez `DOCKER_API_VERSION=1.43 docker compose -f deployment/compose.lan.yml up -d`, ponieważ zainstalowany klient Compose domyślnie żąda nowszej wersji API niż tamtejszy Docker Engine.
+
+**Plik na serwerze jest niepodpisany**: SideStore podpisuje go dla urządzenia. Safari nie instaluje IPA po samym pobraniu. SideStore wymaga własnej instalacji początkowej przez komputer oraz zalogowania konta Apple używanego do podpisu wewnątrz SideStore; nie wymaga zmiany konta iCloud iPada. Instalacja, aktualizacja i odświeżenie podpisu wymagają LocalDevVPN. Na docelowym iPadzie LocalDevVPN wyłącza Tailscale, więc przy domowym Wi-Fi najpierw testujemy **lokalne źródło** z `192.168.1.218`. Jeśli SideStore nie przyjmie lokalnego HTTP lub pobieranie nie zadziała, sprawdzona ścieżka awaryjna pozostaje: pobrać IPA z maliny przez Tailscale do Plików, przełączyć na LocalDevVPN i zaimportować IPA przez **SideStore → My Apps → +**. Odświeżenie co 7 dni wykonuje SideStore na iPadzie, nie strona maliny. Automatyczne odświeżanie w tle jest próbą, więc przed upływem terminu trzeba sprawdzać licznik w SideStore. Zgodność instalacji i nagrywania z iPadOS 27 pozostaje do sprawdzenia na urządzeniu.
 
 ## Przebieg testu
 
