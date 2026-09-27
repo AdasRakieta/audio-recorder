@@ -2,6 +2,8 @@
 
 To jest **pierwszy etap** planowanej aplikacji. Korzysta z ScreenCaptureKit, który Apple udostępniło do przechwytywania całego ekranu na iOS/iPadOS 27. Wcześniej planowane ReplayKit Broadcast Upload Extension jest w dokumentacji Apple oznaczone jako niewspierane. Prototyp zapisuje **wyłącznie dźwięk**; klatki obrazu odrzuca.
 
+**Wynik testu na urządzeniu:** w zwykłym spotkaniu Teams z drugim uczestnikiem prototyp nie zapisał jego głosu. Wcześniej ciszę podczas połączenia z autosekretarką dało również wbudowane nagrywanie ekranu iPada. Nie używać tego prototypu do ważnych wykładów. Zgodnie z warunkiem wykonalności dalszy rozwój przechwytywania Teams i transkrypcji jego pustych plików jest wstrzymany. Sprawdzamy nagrywanie oraz transkrypcję uruchamiane w samym Teams jako możliwe źródło materiału.
+
 ## Co sprawdzamy
 
 1. Czy strumień `.audio` zawiera głos wykładowcy z Teams przy wyłączonym mikrofonie nagrywania — osobno na głośniku i na słuchawkach.

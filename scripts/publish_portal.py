@@ -152,7 +152,7 @@ a.secondary {{background:#e8edf7;color:#244887}} a {{color:#244f9e}} code {{word
 <p class="note">SHA-256: <code>{digest}</code> · <a href="releases/{name}.sha256">plik sumy</a></p></section>
 <section class="card"><h2>Instalacja</h2><ol>{instructions}</ol>
 <p class="note">{network_note} Malina nie podpisuje aplikacji. <a href="https://github.com/AdasRakieta/audio-recorder/blob/main/docs/TEST_NA_IPADZIE.md">Dokładna instrukcja i plan testów</a>.</p></section>
-<section class="card"><h2>Stan prototypu</h2><p>Instalacja przez SideStore została wykonana. Nadal trzeba sprawdzić odnowienie podpisu oraz zapis głosu drugiego uczestnika podczas zwykłego spotkania Teams. Test połączenia z autosekretarką dał ciszę także we wbudowanym nagrywaniu ekranu iPada.</p></section>
+<section class="card"><h2>Wynik testu Teams</h2><p>Instalacja przez SideStore została wykonana, ale prototyp nie zapisał głosu drugiego uczestnika zwykłego spotkania Teams. Nie używaj go do ważnych wykładów. Sprawdzamy teraz nagrywanie i transkrypcję uruchamiane bezpośrednio w Teams. Odnowienie podpisu nadal wymaga osobnego testu.</p></section>
 </main></body></html>'''
     atomic_write(output / "index.html", page.encode())
 

@@ -2,6 +2,8 @@
 
 To **prototyp wykonalności**, nie gotowy dyktafon do ważnych wykładów. Jego zadaniem jest sprawdzić, czy iPadOS 27 udostępnia głos rozmówcy Teams w przechwytywaniu dźwięku. Nie zakładaj sukcesu, dopóki nie odsłuchasz plików z rzeczywistego połączenia.
 
+**Wynik otrzymany od użytkownika:** także podczas zwykłego spotkania Teams z drugim urządzeniem prototyp nie zapisał głosu uczestnika. To nie jest działający sposób nagrywania wykładów. Dalsze testy A–D poniżej są zachowane jako procedura diagnostyczna; nie trzeba ich wykonywać w całości, aby stwierdzić niepowodzenie podstawowego testu. Kolejny test dotyczy funkcji nagrywania i transkrypcji dostępnych wewnątrz Teams.
+
 ## Kto za co odpowiada
 
 | Element | Zadanie | Konto Apple |
@@ -87,6 +89,10 @@ Dla każdej próby:
 Przetestuj osobno zablokowanie ekranu i przerwanie rozmowy. Obecny prototyp nie jest jeszcze odpornym rejestratorem segmentowym: sześciogodzinna sesja, odzyskanie po zamknięciu aplikacji i brak miejsca **nie są** gotowymi funkcjami. Najpierw musimy potwierdzić podstawową jakość audio i podpisywanie.
 
 Dla porównania wykonaj drugi test tego samego zwykłego spotkania przez **Nagrywanie ekranu** z Centrum sterowania iPada z wyłączonym mikrofonem i odsłuchaj film w Zdjęciach. Jeśli oba sposoby zapiszą ciszę podczas wypowiedzi drugiego uczestnika, przechwytywanie głosu Teams jest prawdopodobnie ograniczone przez system lub Teams. Wtedy nie uruchamiamy transkrypcji pustego pliku: zgodnie z warunkiem wykonalności projektu trzeba wybrać inne źródło audio.
+
+## 4a. Test funkcji wbudowanych w Teams
+
+Jeżeli widzisz te opcje **w menu spotkania Teams**, przeprowadź krótki test z drugim uczestnikiem. W Teams wybierz **Więcej → Nagraj i transkrybuj → Rozpocznij nagrywanie** albo **Rozpocznij transkrypcję** i potwierdź język mówiony (polski lub angielski). Uczestnicy zobaczą powiadomienie. Po spotkaniu sprawdź nagranie i tekst w czacie/recapie spotkania. Według [instrukcji Microsoft dotyczącej nagrywania](https://support.microsoft.com/en-us/teams/meetings/start-stop-and-find-meeting-recordings-in-microsoft-teams) nagranie trafia do OneDrive lub SharePoint organizatora; [instrukcja transkrypcji](https://support.microsoft.com/en-us/teams/meetings/start-stop-and-download-live-transcripts-in-microsoft-teams-meetings) opisuje pobranie pliku VTT lub DOCX po spotkaniu, zwykle przez organizatora albo współorganizatora. Na iPadzie możliwy jest podgląd transkrypcji po spotkaniu, ale do pobrania pliku może być potrzebny Teams na Windows albo udostępnienie przez organizatora. Dostępność i uprawnienia zależą od konta oraz zasad organizacji. Nie zakładaj, że samo wyświetlenie opcji gwarantuje jej uruchomienie lub pobranie pliku.
 
 ## 5. Odświeżenie podpisu i aktualizacja
 
