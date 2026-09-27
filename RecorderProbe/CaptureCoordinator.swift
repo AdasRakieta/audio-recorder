@@ -52,18 +52,16 @@ final class CaptureCoordinator: NSObject, ObservableObject {
             startedAt = Date()
 
             if microphoneEnabled {
-                try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
+                try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP])
                 try AVAudioSession.sharedInstance().setActive(true)
             }
 
             let configuration = SCStreamConfiguration()
             configuration.capturesAudio = true
-            configuration.captureMicrophone = microphoneEnabled
             configuration.excludesCurrentProcessAudio = true
             configuration.sampleRate = 48_000
             configuration.channelCount = 2
             // Screen frames are delivered to the delegate but never stored.
-            configuration.minimumFrameInterval = CMTime(value: 1, timescale: 1)
             let newStream = SCStream(filter: filter, configuration: configuration, delegate: self)
             try newStream.addStreamOutput(self, type: .screen, sampleHandlerQueue: .main)
             try newStream.addStreamOutput(self, type: .audio, sampleHandlerQueue: .main)
@@ -141,6 +139,10 @@ final class CaptureCoordinator: NSObject, ObservableObject {
 }
 
 extension CaptureCoordinator: SCContentSharingPickerObserver {
+    func contentSharingPicker(_ picker: SCContentSharingPicker, didCancelFor stream: SCStream?) {
+        status = "Anulowano"
+    }
+
     func contentSharingPicker(_ picker: SCContentSharingPicker, didUpdateWith filter: SCContentFilter, for stream: SCStream?) {
         guard stream == nil else { return }
         Task { await start(filter: filter) }
