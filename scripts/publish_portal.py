@@ -63,6 +63,12 @@ def publish(ipa: Path, output: Path, base_url: str) -> None:
         if len(apps) != 1 or apps[0].get("bundleIdentifier") != bundle:
             raise ValueError("existing source belongs to another app")
         versions = apps[0].get("versions", [])
+        previous_base = previous.get("website", "").rstrip("/")
+        if previous_base and previous_base != base_url:
+            for item in versions:
+                old_url = item.get("downloadURL", "")
+                if old_url.startswith(previous_base + "/releases/"):
+                    item["downloadURL"] = base_url + old_url[len(previous_base):]
     download_url = f"{base_url}/releases/{name}"
     current = next((item for item in versions if item["version"] == version and item["buildVersion"] == build), None)
     if current and current["downloadURL"] != download_url:
@@ -121,8 +127,8 @@ a.secondary {{background:#e8edf7;color:#244887}} a {{color:#244f9e}} code {{word
 <section class="card"><h2>Aktualne wydanie</h2><p class="meta">Wersja {html.escape(version)} · build {html.escape(build)} · iPadOS 27 lub nowszy · {ipa.stat().st_size / 1024:.0f} KB</p>
 <div class="actions"><a class="button" href="{html.escape(source_link, quote=True)}">Dodaj źródło w SideStore</a><a class="button secondary" href="{html.escape(install_link, quote=True)}">Otwórz IPA w SideStore</a><a class="button secondary" href="releases/{name}" download>Pobierz niepodpisane IPA</a></div>
 <p class="note">SHA-256: <code>{digest}</code> · <a href="releases/{name}.sha256">plik sumy</a></p></section>
-<section class="card"><h2>Instalacja i aktualizacje</h2><ol><li>Zainstaluj SideStore na iPadzie przez komputer i zaloguj w nim konto Apple używane do podpisywania. Konto iCloud iPada może pozostać bez zmian.</li><li>Włącz Tailscale i LocalDevVPN, a następnie wybierz „Dodaj źródło w SideStore”.</li><li>Zainstaluj aplikację w SideStore. Nowe wersje pojawią się w tym źródle.</li><li>Przed końcem 7 dni odśwież podpis w SideStore. SideStore próbuje też odnawiać go w tle, lecz warto sprawdzać licznik.</li></ol>
-<p class="note">Ta strona udostępnia plik i informacje o wersjach. Samo pobranie IPA w Safari nie instaluje aplikacji ani nie odnawia podpisu. SideStore musi podpisać pakiet na iPadzie.</p></section>
+<section class="card"><h2>Instalacja i aktualizacje</h2><ol><li>Zainstaluj SideStore na iPadzie przez komputer i zaloguj w nim konto Apple używane do podpisywania. Konto iCloud iPada może pozostać bez zmian.</li><li>Włącz Tailscale i LocalDevVPN. Sprawdź, czy ta strona nadal się otwiera — współdziałanie obu VPN na iPadOS 27 wymaga testu.</li><li>Jeśli strona działa, wybierz „Dodaj źródło w SideStore” i zainstaluj aplikację. Nowe wersje pojawią się w źródle.</li><li>Przed końcem 7 dni odśwież podpis w SideStore. Sprawdzaj licznik, nawet jeśli odświeżanie w tle jest włączone.</li></ol>
+<p class="note">Malina nie podpisuje aplikacji. Samo pobranie IPA w Safari nie instaluje jej ani nie odnawia podpisu. <a href="https://github.com/AdasRakieta/audio-recorder/blob/main/docs/TEST_NA_IPADZIE.md">Dokładna instrukcja i plan testów</a>.</p></section>
 <section class="card"><h2>Stan prototypu</h2><p>Nie potwierdzono jeszcze na fizycznym iPadzie, czy nagrywanie przechwytuje głos rozmówcy Teams ani czy SideStore zainstaluje i odnowi tę aplikację na iPadOS 27.</p></section>
 </main></body></html>'''
     atomic_write(output / "index.html", page.encode())

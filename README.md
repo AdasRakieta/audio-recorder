@@ -17,9 +17,7 @@ Projekt jest opisany w `project.yml` dla [XcodeGen](https://github.com/yonaskolb
 
 Workflow GitHub Actions buduje na standardowym runnerze `xcode-27` i publikuje **niepodpisane IPA** jako artifact. Plik nie instaluje się bez ponownego podpisania przez AltStore/AltServer. Nie umieszczaj Apple ID, haseł, profili ani kluczy podpisu w repozytorium lub artifactach.
 
-Na Windows AltServer jest już zainstalowany. Najprostsza próba bez logowania się na konto iCloud iPada: połącz iPada przez USB, zaakceptuj **Zaufaj temu komputerowi**, włącz tryb deweloperski na iPadzie, a następnie przytrzymaj **Shift** i kliknij ikonę AltServer w zasobniku Windows. Wybierz **Sideload .ipa…** i wskaż wyodrębniony `RecorderProbe-unsigned.ipa` (nie plik ZIP). Do podpisu użyj konta Apple dostępnego na komputerze; nie trzeba zmieniać konta iCloud iPada. Ta ścieżka wymaga ręcznego ponowienia instalacji przed upływem 7 dni. [Instrukcja AltStore dla Windows](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows), [opcja Sideload .ipa w AltServer](https://faq.altstore.io/release-notes/altserver).
-
-Gdy test nagrywania przejdzie, można rozważyć odświeżanie przez SideStore, które nie wymaga logowania do konta iCloud urządzenia, lecz wymaga zalogowania konta podpisującego wewnątrz SideStore na iPadzie. Nie zakładamy, że jest to możliwe w obecnym układzie kont. Jeśli instalacja lub podpisanie się nie uda, zapisz dokładny komunikat — to część testu wykonalności.
+Obecna ścieżka instalacji używa SideStore. Wymaga jednorazowego połączenia iPada z Windowsem przez USB i zalogowania konta podpisującego w iloader na Windows oraz w SideStore na iPadzie. Konto iCloud iPada zostaje bez zmian. **Malina nie podpisuje IPA** i nie przechowuje danych konta Apple. Szczegółowa instrukcja konfiguracji i testów jest w [docs/TEST_NA_IPADZIE.md](docs/TEST_NA_IPADZIE.md).
 
 ## Prywatna strona wydań na malinie
 
@@ -27,12 +25,12 @@ Skrypt `scripts/publish_portal.py` sprawdza metadane IPA, kopiuje je pod nazwą 
 
 ```sh
 python3 scripts/publish_portal.py RecorderProbe-unsigned.ipa /home/adas.rakieta/audio-recorder-distribution \
-  --base-url https://malina.tail384b18.ts.net:8444
+  --base-url https://malina.tail384b18.ts.net/audio
 ```
 
-Katalog jest już wystawiony przez Tailscale Serve wyłącznie w tailnecie. Strona: `https://malina.tail384b18.ts.net:8444/`; źródło: `/source.json`. Dla każdej nowej wersji trzeba zwiększyć `MARKETING_VERSION` lub `CURRENT_PROJECT_VERSION` w `project.yml`, zbudować IPA i uruchomić skrypt ponownie. Historia wersji pozostaje w źródle, a powtórzenie publikacji tej samej wersji z inną zawartością zostaje odrzucone.
+Katalog jest już wystawiony przez Tailscale Serve wyłącznie w tailnecie. Strona: `https://malina.tail384b18.ts.net/audio/`; źródło: `https://malina.tail384b18.ts.net/audio/source.json`. Dla każdej nowej wersji trzeba zwiększyć `MARKETING_VERSION` lub `CURRENT_PROJECT_VERSION` w `project.yml`, zbudować IPA i uruchomić skrypt ponownie. Historia wersji pozostaje w źródle, a powtórzenie publikacji tej samej wersji z inną zawartością zostaje odrzucone.
 
-Przycisk strony otwiera źródło w SideStore. **Plik na serwerze jest niepodpisany**: SideStore pobiera go i podpisuje dla urządzenia. Safari nie instaluje IPA po samym pobraniu. SideStore wymaga własnej instalacji początkowej przez komputer oraz zalogowania konta Apple używanego do podpisu wewnątrz SideStore; nie wymaga zmiany konta iCloud iPada. Instalacja, aktualizacja i odświeżenie podpisu wymagają działającego LocalDevVPN. Odświeżenie co 7 dni wykonuje SideStore na iPadzie, nie strona maliny. Automatyczne odświeżanie w tle jest próbą, więc przed upływem terminu trzeba sprawdzać licznik w SideStore. Zgodność tego przepływu z iPadOS 27 pozostaje do sprawdzenia na urządzeniu.
+Przycisk strony otwiera źródło w SideStore. **Plik na serwerze jest niepodpisany**: SideStore pobiera go i podpisuje dla urządzenia. Safari nie instaluje IPA po samym pobraniu. SideStore wymaga własnej instalacji początkowej przez komputer oraz zalogowania konta Apple używanego do podpisu wewnątrz SideStore; nie wymaga zmiany konta iCloud iPada. Instalacja, aktualizacja i odświeżenie podpisu wymagają działającego LocalDevVPN. Odświeżenie co 7 dni wykonuje SideStore na iPadzie, nie strona maliny. Automatyczne odświeżanie w tle jest próbą, więc przed upływem terminu trzeba sprawdzać licznik w SideStore. Jednoczesne działanie Tailscale i LocalDevVPN na iPadOS 27 także wymaga testu; opis awaryjny jest w instrukcji. Zgodność całego przepływu z iPadOS 27 pozostaje do sprawdzenia na urządzeniu.
 
 ## Przebieg testu
 
