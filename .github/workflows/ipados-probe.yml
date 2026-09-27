@@ -1,0 +1,36 @@
+name: iPadOS probe
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install project generator
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        run: xcodegen generate
+      - name: Build for iPadOS without signing
+        run: |
+          xcodebuild -project RecorderProbe.xcodeproj \
+            -scheme RecorderProbe \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO build
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p build/Payload
+          cp -R DerivedData/Build/Products/Release-iphoneos/RecorderProbe.app build/Payload/
+          cd build
+          ditto -c -k --sequesterRsrc --keepParent Payload RecorderProbe-unsigned.ipa
+          shasum -a 256 RecorderProbe-unsigned.ipa > RecorderProbe-unsigned.ipa.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recorder-probe-unsigned
+          path: |
+            build/RecorderProbe-unsigned.ipa
+            build/RecorderProbe-unsigned.ipa.sha256

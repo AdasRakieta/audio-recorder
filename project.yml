@@ -1,0 +1,35 @@
+name: RecorderProbe
+options:
+  bundleIdPrefix: io.github.audiorecorder
+  deploymentTarget:
+    iOS: "27.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "2"
+    IPHONEOS_DEPLOYMENT_TARGET: "27.0"
+    GENERATE_INFOPLIST_FILE: "YES"
+targets:
+  RecorderProbe:
+    type: application
+    platform: iOS
+    sources:
+      - path: RecorderProbe
+    info:
+      path: RecorderProbe/Info.plist
+      properties:
+        CFBundleDisplayName: Recorder Probe
+        NSMicrophoneUsageDescription: Record your microphone only when you enable it in the system picker.
+        UIBackgroundModes:
+          - screen-capture
+          - audio
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.audiorecorder.probe
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
