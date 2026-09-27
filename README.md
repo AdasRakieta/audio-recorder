@@ -17,6 +17,8 @@ Projekt jest opisany w `project.yml` dla [XcodeGen](https://github.com/yonaskolb
 
 Workflow GitHub Actions buduje na standardowym runnerze `xcode-27` i publikuje **niepodpisane IPA** jako artifact. Plik nie instaluje się bez ponownego podpisania przez AltStore/AltServer. Nie umieszczaj Apple ID, haseł, profili ani kluczy podpisu w repozytorium lub artifactach.
 
+Na Windows zainstaluj AltStore Classic zgodnie z [instrukcją AltStore](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows): iTunes i iCloud od Apple, AltServer, pierwsze połączenie USB, zaufanie do komputera i tryb deweloperski na iPadzie. Z udanego przebiegu GitHub Actions pobierz artifact `recorder-probe-unsigned`, przenieś IPA do aplikacji Pliki na iPadzie, a następnie wybierz je w AltStore Classic z zakładki **My Apps**. Podczas instalacji AltServer na Windows musi działać. Jeśli AltStore odmówi podpisania lub instalacji, zapisz dokładny komunikat — to część testu wykonalności.
+
 ## Przebieg testu
 
 1. Zainstaluj prototyp na iPadzie 10. generacji z iPadOS 27. Uruchom go i dotknij **Wybierz ekran i rozpocznij**. W systemowym oknie wybierz **cały ekran**; mikrofon na początek zostaw wyłączony.
