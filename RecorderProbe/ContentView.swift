@@ -7,7 +7,7 @@ struct ContentView: View {
         NavigationStack {
             Form {
                 Section("Test Teams") {
-                    Text("Włącz nagrywanie całego ekranu, przejdź do Teams i odtwórz fragment wykładu. Mikrofon wybierasz w systemowym oknie.")
+                    Text("W oknie systemowym wybierz cały ekran. Recorder Probe jest odbiorcą nagrania, a nie źródłem dźwięku. Następnie przejdź do Teams. Mikrofon wybierasz w oknie systemowym.")
                         .foregroundStyle(.secondary)
                     Button {
                         capture.presentPicker()

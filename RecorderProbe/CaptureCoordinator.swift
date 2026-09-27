@@ -32,6 +32,7 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         }
         var configuration = SCContentSharingPickerConfiguration()
         configuration.showsMicrophoneControl = true
+        configuration.allowedPickerModes = .singleDisplay
         picker.defaultConfiguration = configuration
         picker.isActive = true
         picker.present()

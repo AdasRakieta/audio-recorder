@@ -19,11 +19,11 @@ Malina jest już skonfigurowana. Jej strona działa tylko w prywatnej sieci Tail
 
 - Strona: <https://malina.tail384b18.ts.net/audio/>
 - Źródło aktualizacji: <https://malina.tail384b18.ts.net/audio/source.json>
-- Aktualne IPA: <https://malina.tail384b18.ts.net/audio/releases/RecorderProbe-0.1.0-1-unsigned.ipa>
+- Aktualne IPA: <https://malina.tail384b18.ts.net/audio/releases/RecorderProbe-0.1.1-2-unsigned.ipa>
 - Lokalna strona w domu: <http://192.168.1.218:8088/audio/>
 - Lokalne źródło SideStore: <http://192.168.1.218:8088/audio/source.json>
 
-Na Windows z włączonym Tailscale otwórz stronę. Powinieneś zobaczyć **Recorder Probe**, wersję `0.1.0 (1)` i trzy przyciski. W PowerShell można sprawdzić odpowiedź serwera:
+Na Windows z włączonym Tailscale otwórz stronę. Powinieneś zobaczyć **Recorder Probe**, wersję `0.1.1 (2)` i trzy przyciski. W PowerShell można sprawdzić odpowiedź serwera:
 
 ```powershell
 curl.exe -I https://malina.tail384b18.ts.net/audio/
@@ -58,8 +58,8 @@ Na tym iPadzie aktywowanie LocalDevVPN wyłącza Tailscale. SideStore wymaga Loc
 
 **Jeśli lokalne źródło nie zadziała, użyj już pobranego IPA lub wykonaj dwa kroki:**
 
-1. Na iPadzie włącz Tailscale. W Safari otwórz <https://malina.tail384b18.ts.net/audio/>. Upewnij się, że widzisz wersję `0.1.0 (1)`.
-2. Wybierz **Pobierz IPA do Plików**. Jeśli Safari tylko pokaże pobranie, otwórz **Pliki → Pobrane** i upewnij się, że znajduje się tam `RecorderProbe-0.1.0-1-unsigned.ipa`. To plik niepodpisany; samo pobranie go nie instaluje.
+1. Na iPadzie włącz Tailscale. W Safari otwórz <https://malina.tail384b18.ts.net/audio/>. Upewnij się, że widzisz wersję `0.1.1 (2)`.
+2. Wybierz **Pobierz IPA do Plików**. Jeśli Safari tylko pokaże pobranie, otwórz **Pliki → Pobrane** i upewnij się, że znajduje się tam `RecorderProbe-0.1.1-2-unsigned.ipa`. To plik niepodpisany; samo pobranie go nie instaluje.
 3. Wyłącz Tailscale, włącz LocalDevVPN i pozostaw Wi-Fi aktywne.
 4. Otwórz **SideStore → My Apps → +** i wybierz pobrany IPA z aplikacji Pliki. Zaczekaj, aż SideStore go podpisze i zainstaluje. Sprawdź, czy `Recorder Probe` pojawił się na ekranie początkowym oraz w My Apps; zanotuj liczbę dni do końca podpisu.
 
@@ -71,9 +71,9 @@ Zrób krótką, umówioną rozmowę testową z drugą osobą i upewnij się, że
 
 | Próba | Ustawienie | Spodziewany materiał do sprawdzenia |
 | --- | --- | --- |
-| A | Głośnik iPada; mikrofon w systemowym oknie nagrywania **wyłączony**; 30–60 s wypowiedzi rozmówcy w Teams. | `system.m4a`: czy słychać rozmówcę. `microphone.m4a` nie powinien zawierać Twojego głosu. |
-| B | Słuchawki; mikrofon nagrywania wyłączony; ta sama próba. | `system.m4a`: czy nadal słychać rozmówcę. |
-| C | Mikrofon nagrywania **włączony**; mówisz Ty i rozmówca; w Teams przełączasz własne wyciszenie. | `system.m4a` i `microphone.m4a`: czy strumienie są odrębne i co dzieje się po zmianie stanu mikrofonu w Teams. |
+| A | Głośnik iPada; mikrofon w systemowym oknie nagrywania **wyłączony**; 30–60 s wypowiedzi rozmówcy w Teams. | Plik z końcówką `_system.m4a`: czy słychać rozmówcę. Plik `_microphone.m4a` nie powinien zawierać Twojego głosu. |
+| B | Słuchawki; mikrofon nagrywania wyłączony; ta sama próba. | Plik `_system.m4a`: czy nadal słychać rozmówcę. |
+| C | Mikrofon nagrywania **włączony**; mówisz Ty i rozmówca; w Teams przełączasz własne wyciszenie. | Pliki `_system.m4a` i `_microphone.m4a`: czy strumienie są odrębne i co dzieje się po zmianie stanu mikrofonu w Teams. |
 | D | Krótka próba bez połączenia z maliną; potem zmiana wyjścia audio. | Czy ukończone pliki zostają lokalnie i czy raport pokazuje przerwę lub błąd. |
 
 Dla każdej próby:
@@ -81,8 +81,8 @@ Dla każdej próby:
 1. Otwórz **Recorder Probe** i dotknij **Wybierz ekran i rozpocznij**.
 2. W systemowym oknie wybierz **cały ekran**. Przełącznik mikrofonu ustaw zgodnie z próbą. Wróć do Teams i prowadź rozmowę 30–60 sekund.
 3. Wróć do Recorder Probe i dotknij **Zakończ i zapisz**. Poczekaj na stan **Zakończono**. Jeśli widać **Przerwano**, **Nie rozpoczęto** albo sekcję **Błąd**, zapisz komunikat.
-4. W sekcji **Ostatni test** użyj **Udostępnij dźwięk aplikacji**, **Udostępnij mikrofon** i **Udostępnij raport**. Zapisz pliki w aplikacji **Pliki**. W katalogu sesji są `system.m4a`, opcjonalnie `microphone.m4a`, oraz `report.json`.
-5. Odsłuchaj każdy plik przez słuchawki. W `report.json` sprawdź `status`, liczbę próbek i `errors`. Zanotuj, czy słychać rozmówcę, własny mikrofon, ciszę, trzaski lub przerwy.
+4. W sekcji **Ostatni test** użyj **Udostępnij dźwięk aplikacji**, **Udostępnij mikrofon** i **Udostępnij raport**. Zapisz pliki w aplikacji **Pliki**. Każdy plik zaczyna się od daty i godziny rozpoczęcia, np. `2026_09_27_21_15_04_system.m4a`, `2026_09_27_21_15_04_microphone.m4a` i `2026_09_27_21_15_04_report.json`. Nagrania z tej samej sekundy otrzymują dodatkowy numer.
+5. Odsłuchaj każdy plik przez słuchawki. W pliku `_report.json` sprawdź `status`, liczbę próbek i `errors`. Zanotuj, czy słychać rozmówcę, własny mikrofon, ciszę, trzaski lub przerwy.
 
 Przetestuj osobno zablokowanie ekranu i przerwanie rozmowy. Obecny prototyp nie jest jeszcze odpornym rejestratorem segmentowym: sześciogodzinna sesja, odzyskanie po zamknięciu aplikacji i brak miejsca **nie są** gotowymi funkcjami. Najpierw musimy potwierdzić podstawową jakość audio i podpisywanie.
 
@@ -90,7 +90,7 @@ Przetestuj osobno zablokowanie ekranu i przerwanie rozmowy. Obecny prototyp nie 
 
 W SideStore otwórz **My Apps** i zapisz dzień wygaśnięcia aplikacji. Następnego dnia, przy Wi-Fi i LocalDevVPN, dotknij licznika dni przy `Recorder Probe` i sprawdź, czy wraca do około 7 dni. Powtórz przed upływem tygodnia. SideStore podejmuje próby odświeżania w tle, lecz iPadOS może opóźniać zadania; przez pełny cykl siedmiodniowy sprawdzaj licznik ręcznie. Malina nie uczestniczy w odświeżaniu podpisu. [FAQ SideStore](https://docs.sidestore.io/docs/faq).
 
-Nowa wersja aplikacji wymaga nowego buildu z wyższym numerem w `project.yml` oraz ponownego uruchomienia `publish_portal.py` na malinie. Wtedy pojawi się w źródle SideStore; aktualizację wybierasz świadomie na iPadzie, poza nagrywaniem. Samo odświeżenie podpisu **nie** wymaga nowego buildu. Wersji `0.1.0 (1)` nie aktualizujemy poprzez podmianę IPA o tej samej nazwie.
+Nowa wersja aplikacji wymaga nowego buildu z wyższym numerem w `project.yml` oraz ponownego uruchomienia `publish_portal.py` na malinie. Wtedy pojawi się w źródle SideStore; aktualizację wybierasz świadomie na iPadzie, poza nagrywaniem. Samo odświeżenie podpisu **nie** wymaga nowego buildu. Wersji `0.1.1 (2)` nie aktualizujemy poprzez podmianę IPA o tej samej nazwie.
 
 ## Co zgłosić po próbie
 

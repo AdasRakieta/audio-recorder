@@ -86,9 +86,7 @@ def publish(ipa: Path, output: Path, base_url: str) -> None:
     current = next((item for item in versions if item["version"] == version and item["buildVersion"] == build), None)
     if current and current["downloadURL"] != download_url:
         raise ValueError("existing version points to a different URL")
-    if current:
-        versions.remove(current)
-    versions.insert(0, {
+    entry = {
         "version": version,
         "buildVersion": build,
         "date": datetime.now(timezone.utc).date().isoformat(),
@@ -96,7 +94,11 @@ def publish(ipa: Path, output: Path, base_url: str) -> None:
         "downloadURL": download_url,
         "size": ipa.stat().st_size,
         "minOSVersion": "27.0",
-    })
+    }
+    if current:
+        current.update({"size": entry["size"], "downloadURL": download_url})
+    else:
+        versions.insert(0, entry)
     microphone = info.get("NSMicrophoneUsageDescription")
     privacy = {"NSMicrophoneUsageDescription": microphone} if microphone else {}
     source = {
