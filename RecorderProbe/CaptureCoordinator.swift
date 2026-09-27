@@ -14,6 +14,7 @@ final class CaptureCoordinator: NSObject, ObservableObject {
     @Published private(set) var lastError: String?
 
     private let picker = SCContentSharingPicker.shared
+    private lazy var delegateProxy = CaptureDelegateProxy(owner: self)
     private var stream: SCStream?
     private var systemWriter: AudioFileWriter?
     private var microphoneWriter: AudioFileWriter?
@@ -26,7 +27,7 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         guard !isCapturing && !isFinishing else { return }
         lastError = nil
         if !observerAdded {
-            picker.add(self)
+            picker.add(delegateProxy)
             observerAdded = true
         }
         var configuration = SCContentSharingPickerConfiguration()
@@ -36,7 +37,7 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         picker.present()
     }
 
-    private func start(filter: SCContentFilter) async {
+    fileprivate func start(filter: SCContentFilter) async {
         guard !isCapturing && !isFinishing else { return }
         systemSamples = 0
         microphoneSamples = 0
@@ -62,11 +63,11 @@ final class CaptureCoordinator: NSObject, ObservableObject {
             configuration.sampleRate = 48_000
             configuration.channelCount = 2
             // Screen frames are delivered to the delegate but never stored.
-            let newStream = SCStream(filter: filter, configuration: configuration, delegate: self)
-            try newStream.addStreamOutput(self, type: .screen, sampleHandlerQueue: .main)
-            try newStream.addStreamOutput(self, type: .audio, sampleHandlerQueue: .main)
+            let newStream = SCStream(filter: filter, configuration: configuration, delegate: delegateProxy)
+            try newStream.addStreamOutput(delegateProxy, type: .screen, sampleHandlerQueue: .main)
+            try newStream.addStreamOutput(delegateProxy, type: .audio, sampleHandlerQueue: .main)
             if microphoneEnabled {
-                try newStream.addStreamOutput(self, type: .microphone, sampleHandlerQueue: .main)
+                try newStream.addStreamOutput(delegateProxy, type: .microphone, sampleHandlerQueue: .main)
             }
             stream = newStream
             try await newStream.startCapture()
@@ -89,7 +90,7 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         }
     }
 
-    private func finish(status finalStatus: String, error: String?) async {
+    fileprivate func finish(status finalStatus: String, error: String?) async {
         isCapturing = false
         isFinishing = true
         stream = nil
@@ -136,26 +137,17 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
     }
-}
 
-extension CaptureCoordinator: SCContentSharingPickerObserver {
-    func contentSharingPicker(_ picker: SCContentSharingPicker, didCancelFor stream: SCStream?) {
+    fileprivate func pickerCanceled() {
         status = "Anulowano"
     }
 
-    func contentSharingPicker(_ picker: SCContentSharingPicker, didUpdateWith filter: SCContentFilter, for stream: SCStream?) {
-        guard stream == nil else { return }
-        Task { await start(filter: filter) }
-    }
-
-    func contentSharingPickerStartDidFailWithError(_ error: Error) {
+    fileprivate func pickerFailed(_ error: Error) {
         lastError = error.localizedDescription
         status = "Nie rozpoczęto"
     }
-}
 
-extension CaptureCoordinator: SCStreamOutput {
-    func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
+    fileprivate func handleSample(_ sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
         guard isCapturing, CMSampleBufferDataIsReady(sampleBuffer), let session = currentSessionURL else { return }
         switch type {
         case .audio:
@@ -172,12 +164,40 @@ extension CaptureCoordinator: SCStreamOutput {
             break
         }
     }
-}
 
-extension CaptureCoordinator: SCStreamDelegate {
-    func stream(_ stream: SCStream, didStopWithError error: Error) {
+    fileprivate func streamFailed(_ error: Error) {
         guard isCapturing && !isFinishing else { return }
         Task { await finish(status: "Przerwano", error: error.localizedDescription) }
+    }
+}
+
+private final class CaptureDelegateProxy: NSObject, SCContentSharingPickerObserver, SCStreamOutput, SCStreamDelegate {
+    weak var owner: CaptureCoordinator?
+
+    init(owner: CaptureCoordinator) {
+        self.owner = owner
+    }
+
+    func contentSharingPicker(_ picker: SCContentSharingPicker, didCancelFor stream: SCStream?) {
+        Task { @MainActor [weak owner] in owner?.pickerCanceled() }
+    }
+
+    func contentSharingPicker(_ picker: SCContentSharingPicker, didUpdateWith filter: SCContentFilter, for stream: SCStream?) {
+        guard stream == nil else { return }
+        Task { @MainActor [weak owner] in await owner?.start(filter: filter) }
+    }
+
+    func contentSharingPickerStartDidFailWithError(_ error: Error) {
+        Task { @MainActor [weak owner] in owner?.pickerFailed(error) }
+    }
+
+    func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
+        guard type == .audio || type == .microphone else { return }
+        Task { @MainActor [weak owner] in owner?.handleSample(sampleBuffer, of: type) }
+    }
+
+    func stream(_ stream: SCStream, didStopWithError error: Error) {
+        Task { @MainActor [weak owner] in owner?.streamFailed(error) }
     }
 }
 
