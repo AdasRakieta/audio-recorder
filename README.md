@@ -17,7 +17,9 @@ Projekt jest opisany w `project.yml` dla [XcodeGen](https://github.com/yonaskolb
 
 Workflow GitHub Actions buduje na standardowym runnerze `xcode-27` i publikuje **niepodpisane IPA** jako artifact. Plik nie instaluje się bez ponownego podpisania przez AltStore/AltServer. Nie umieszczaj Apple ID, haseł, profili ani kluczy podpisu w repozytorium lub artifactach.
 
-Na Windows zainstaluj AltStore Classic zgodnie z [instrukcją AltStore](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows): iTunes i iCloud od Apple, AltServer, pierwsze połączenie USB, zaufanie do komputera i tryb deweloperski na iPadzie. Z udanego przebiegu GitHub Actions pobierz artifact `recorder-probe-unsigned`, przenieś IPA do aplikacji Pliki na iPadzie, a następnie wybierz je w AltStore Classic z zakładki **My Apps**. Podczas instalacji AltServer na Windows musi działać. Jeśli AltStore odmówi podpisania lub instalacji, zapisz dokładny komunikat — to część testu wykonalności.
+Na Windows AltServer jest już zainstalowany. Najprostsza próba bez logowania się na konto iCloud iPada: połącz iPada przez USB, zaakceptuj **Zaufaj temu komputerowi**, włącz tryb deweloperski na iPadzie, a następnie przytrzymaj **Shift** i kliknij ikonę AltServer w zasobniku Windows. Wybierz **Sideload .ipa…** i wskaż wyodrębniony `RecorderProbe-unsigned.ipa` (nie plik ZIP). Do podpisu użyj konta Apple dostępnego na komputerze; nie trzeba zmieniać konta iCloud iPada. Ta ścieżka wymaga ręcznego ponowienia instalacji przed upływem 7 dni. [Instrukcja AltStore dla Windows](https://faq.altstore.io/altstore-classic/how-to-install-altstore-windows), [opcja Sideload .ipa w AltServer](https://faq.altstore.io/release-notes/altserver).
+
+Gdy test nagrywania przejdzie, można rozważyć odświeżanie przez SideStore, które nie wymaga logowania do konta iCloud urządzenia, lecz wymaga zalogowania konta podpisującego wewnątrz SideStore na iPadzie. Nie zakładamy, że jest to możliwe w obecnym układzie kont. Jeśli instalacja lub podpisanie się nie uda, zapisz dokładny komunikat — to część testu wykonalności.
 
 ## Przebieg testu
 
