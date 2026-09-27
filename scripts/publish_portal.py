@@ -84,14 +84,14 @@ def publish(ipa: Path, output: Path, base_url: str) -> None:
         "name": "Recorder Probe",
         "subtitle": "Prywatne wydania na iPada",
         "website": base_url + "/",
-        "iconURL": base_url + "/icon.svg",
+        "iconURL": base_url + "/icon.png",
         "apps": [{
             "name": "Recorder Probe",
             "bundleIdentifier": bundle,
             "developerName": "Audio Recorder",
             "subtitle": "Test nagrywania Teams",
             "localizedDescription": "Prototyp techniczny. Nagrywa wyłącznie dźwięk i zapisuje raport z testu.",
-            "iconURL": base_url + "/icon.svg",
+            "iconURL": base_url + "/icon.png",
             "tintColor": "#315AA8",
             "category": "utilities",
             "versions": versions,
@@ -99,8 +99,7 @@ def publish(ipa: Path, output: Path, base_url: str) -> None:
         }],
     }
     atomic_write(source_path, (json.dumps(source, ensure_ascii=False, indent=2) + "\n").encode())
-    icon = '''<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" rx="56" fill="#315aa8"/><path d="M48 130h25l13-33 22 69 24-98 23 89 16-51 13 24h24" fill="none" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>'''
-    atomic_write(output / "icon.svg", icon.encode())
+    shutil.copyfile(Path(__file__).with_name("icon.png"), output / "icon.png")
     source_link = "sidestore://source?url=" + urllib.parse.quote(base_url + "/source.json", safe="")
     install_link = "sidestore://install?url=" + urllib.parse.quote(download_url, safe="")
     page = f'''<!doctype html>
@@ -117,7 +116,7 @@ a.button {{display:inline-block;padding:13px 18px;border-radius:12px;background:
 a.secondary {{background:#e8edf7;color:#244887}} a {{color:#244f9e}} code {{word-break:break-all;font-size:.85em}} .note {{font-size:.94rem;color:#536482}}
 @media(prefers-color-scheme:dark) {{body {{background:#101522;color:#ecf0fa}} .lead,.meta,.note {{color:#b0bfdb}} .card {{background:#1a2233;border-color:#32405b;box-shadow:none}} a {{color:#a7c5ff}} a.secondary {{background:#2b3c5a;color:#c8dcff}} .eyebrow {{color:#b0bfdb}}}}
 </style></head><body><main>
-<div class="top"><img class="icon" src="icon.svg" alt=""><div><div class="eyebrow">Prywatna dystrybucja</div><h1>Recorder Probe</h1></div></div>
+<div class="top"><img class="icon" src="icon.png" alt=""><div><div class="eyebrow">Prywatna dystrybucja</div><h1>Recorder Probe</h1></div></div>
 <p class="lead">Prototyp testowy nagrywania dźwięku na iPadzie. Wydania są dostępne tylko przez Twoją sieć Tailscale.</p>
 <section class="card"><h2>Aktualne wydanie</h2><p class="meta">Wersja {html.escape(version)} · build {html.escape(build)} · iPadOS 27 lub nowszy · {ipa.stat().st_size / 1024:.0f} KB</p>
 <div class="actions"><a class="button" href="{html.escape(source_link, quote=True)}">Dodaj źródło w SideStore</a><a class="button secondary" href="{html.escape(install_link, quote=True)}">Otwórz IPA w SideStore</a><a class="button secondary" href="releases/{name}" download>Pobierz niepodpisane IPA</a></div>
