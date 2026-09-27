@@ -19,11 +19,11 @@ Malina jest już skonfigurowana. Jej strona działa tylko w prywatnej sieci Tail
 
 - Strona: <https://malina.tail384b18.ts.net/audio/>
 - Źródło aktualizacji: <https://malina.tail384b18.ts.net/audio/source.json>
-- Aktualne IPA: <https://malina.tail384b18.ts.net/audio/releases/RecorderProbe-0.1.1-2-unsigned.ipa>
+- Aktualne IPA: <https://malina.tail384b18.ts.net/audio/releases/RecorderProbe-0.1.2-3-unsigned.ipa>
 - Lokalna strona w domu: <http://192.168.1.218:8088/audio/>
 - Lokalne źródło SideStore: <http://192.168.1.218:8088/audio/source.json>
 
-Na Windows z włączonym Tailscale otwórz stronę. Powinieneś zobaczyć **Recorder Probe**, wersję `0.1.1 (2)` i trzy przyciski. W PowerShell można sprawdzić odpowiedź serwera:
+Na Windows z włączonym Tailscale otwórz stronę. Powinieneś zobaczyć **Recorder Probe**, wersję `0.1.2 (3)` i trzy przyciski. W PowerShell można sprawdzić odpowiedź serwera:
 
 ```powershell
 curl.exe -I https://malina.tail384b18.ts.net/audio/
@@ -58,8 +58,8 @@ Na tym iPadzie aktywowanie LocalDevVPN wyłącza Tailscale. SideStore wymaga Loc
 
 **Jeśli lokalne źródło nie zadziała, użyj już pobranego IPA lub wykonaj dwa kroki:**
 
-1. Na iPadzie włącz Tailscale. W Safari otwórz <https://malina.tail384b18.ts.net/audio/>. Upewnij się, że widzisz wersję `0.1.1 (2)`.
-2. Wybierz **Pobierz IPA do Plików**. Jeśli Safari tylko pokaże pobranie, otwórz **Pliki → Pobrane** i upewnij się, że znajduje się tam `RecorderProbe-0.1.1-2-unsigned.ipa`. To plik niepodpisany; samo pobranie go nie instaluje.
+1. Na iPadzie włącz Tailscale. W Safari otwórz <https://malina.tail384b18.ts.net/audio/>. Upewnij się, że widzisz wersję `0.1.2 (3)`.
+2. Wybierz **Pobierz IPA do Plików**. Jeśli Safari tylko pokaże pobranie, otwórz **Pliki → Pobrane** i upewnij się, że znajduje się tam `RecorderProbe-0.1.2-3-unsigned.ipa`. To plik niepodpisany; samo pobranie go nie instaluje.
 3. Wyłącz Tailscale, włącz LocalDevVPN i pozostaw Wi-Fi aktywne.
 4. Otwórz **SideStore → My Apps → +** i wybierz pobrany IPA z aplikacji Pliki. Zaczekaj, aż SideStore go podpisze i zainstaluje. Sprawdź, czy `Recorder Probe` pojawił się na ekranie początkowym oraz w My Apps; zanotuj liczbę dni do końca podpisu.
 
@@ -92,7 +92,7 @@ Dla porównania wykonaj drugi test tego samego zwykłego spotkania przez **Nagry
 
 W SideStore otwórz **My Apps** i zapisz dzień wygaśnięcia aplikacji. Następnego dnia, przy Wi-Fi i LocalDevVPN, dotknij licznika dni przy `Recorder Probe` i sprawdź, czy wraca do około 7 dni. Powtórz przed upływem tygodnia. SideStore podejmuje próby odświeżania w tle, lecz iPadOS może opóźniać zadania; przez pełny cykl siedmiodniowy sprawdzaj licznik ręcznie. Malina nie uczestniczy w odświeżaniu podpisu. [FAQ SideStore](https://docs.sidestore.io/docs/faq).
 
-Nowa wersja aplikacji wymaga nowego buildu z wyższym numerem w `project.yml` oraz ponownego uruchomienia `publish_portal.py` na malinie. Wtedy pojawi się w źródle SideStore; aktualizację wybierasz świadomie na iPadzie, poza nagrywaniem. Samo odświeżenie podpisu **nie** wymaga nowego buildu. Wersji `0.1.1 (2)` nie aktualizujemy poprzez podmianę IPA o tej samej nazwie.
+Nowa wersja aplikacji wymaga nowego buildu z wyższym numerem w `project.yml` oraz ponownego uruchomienia `publish_portal.py` na malinie. Wtedy pojawi się w źródle SideStore; aktualizację wybierasz świadomie na iPadzie, poza nagrywaniem. Samo odświeżenie podpisu **nie** wymaga nowego buildu. Wersji `0.1.2 (3)` nie aktualizujemy poprzez podmianę IPA o tej samej nazwie.
 
 ## Co zgłosić po próbie
 
