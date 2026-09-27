@@ -46,11 +46,10 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         status = "Uruchamianie"
         microphoneEnabled = filter.isMicrophoneEnabled
         do {
-            let root = try Self.recordingsDirectory()
-            let session = root.appendingPathComponent(UUID().uuidString, isDirectory: true)
-            try FileManager.default.createDirectory(at: session, withIntermediateDirectories: true)
+            let startDate = Date()
+            let session = try Self.createSessionDirectory(startedAt: startDate)
             currentSessionURL = session
-            startedAt = Date()
+            startedAt = startDate
 
             if microphoneEnabled {
                 try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP])
@@ -117,7 +116,7 @@ final class CaptureCoordinator: NSObject, ObservableObject {
             )
             do {
                 let data = try JSONEncoder.pretty.encode(report)
-                try data.write(to: session.appendingPathComponent("report.json"), options: .atomic)
+                try data.write(to: Self.fileURL(in: session, named: "report.json"), options: .atomic)
                 lastSessionURL = session
             } catch {
                 errors.append("Raport: \(error.localizedDescription)")
@@ -138,6 +137,28 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         return directory
     }
 
+    private static func createSessionDirectory(startedAt date: Date) throws -> URL {
+        let root = try recordingsDirectory()
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
+        let timestamp = formatter.string(from: date)
+        var name = timestamp
+        var number = 2
+        while FileManager.default.fileExists(atPath: root.appendingPathComponent(name).path) {
+            name = "\(timestamp)_\(number)"
+            number += 1
+        }
+        let session = root.appendingPathComponent(name, isDirectory: true)
+        try FileManager.default.createDirectory(at: session, withIntermediateDirectories: false)
+        return session
+    }
+
+    static func fileURL(in session: URL, named name: String) -> URL {
+        session.appendingPathComponent("\(session.lastPathComponent)_\(name)")
+    }
+
     fileprivate func pickerCanceled() {
         status = "Anulowano"
     }
@@ -152,12 +173,12 @@ final class CaptureCoordinator: NSObject, ObservableObject {
         switch type {
         case .audio:
             if systemWriter == nil {
-                systemWriter = try? AudioFileWriter(url: session.appendingPathComponent("system.m4a"), firstSample: sampleBuffer)
+                systemWriter = try? AudioFileWriter(url: Self.fileURL(in: session, named: "system.m4a"), firstSample: sampleBuffer)
             }
             if let systemWriter, systemWriter.append(sampleBuffer) { systemSamples += 1 }
         case .microphone:
             if microphoneWriter == nil {
-                microphoneWriter = try? AudioFileWriter(url: session.appendingPathComponent("microphone.m4a"), firstSample: sampleBuffer)
+                microphoneWriter = try? AudioFileWriter(url: Self.fileURL(in: session, named: "microphone.m4a"), firstSample: sampleBuffer)
             }
             if let microphoneWriter, microphoneWriter.append(sampleBuffer) { microphoneSamples += 1 }
         default:

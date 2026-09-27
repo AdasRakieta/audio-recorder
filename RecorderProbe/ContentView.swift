@@ -34,20 +34,23 @@ struct ContentView: View {
                 }
 
                 if let sessionURL = capture.lastSessionURL {
+                    let systemURL = CaptureCoordinator.fileURL(in: sessionURL, named: "system.m4a")
+                    let microphoneURL = CaptureCoordinator.fileURL(in: sessionURL, named: "microphone.m4a")
+                    let reportURL = CaptureCoordinator.fileURL(in: sessionURL, named: "report.json")
                     Section("Ostatni test") {
                         Text(sessionURL.lastPathComponent)
                             .font(.caption.monospaced())
-                        if FileManager.default.fileExists(atPath: sessionURL.appendingPathComponent("system.m4a").path) {
-                            ShareLink(item: sessionURL.appendingPathComponent("system.m4a")) {
+                        if FileManager.default.fileExists(atPath: systemURL.path) {
+                            ShareLink(item: systemURL) {
                                 Label("Udostępnij dźwięk aplikacji", systemImage: "square.and.arrow.up")
                             }
                         }
-                        if FileManager.default.fileExists(atPath: sessionURL.appendingPathComponent("microphone.m4a").path) {
-                            ShareLink(item: sessionURL.appendingPathComponent("microphone.m4a")) {
+                        if FileManager.default.fileExists(atPath: microphoneURL.path) {
+                            ShareLink(item: microphoneURL) {
                                 Label("Udostępnij mikrofon", systemImage: "mic")
                             }
                         }
-                        ShareLink(item: sessionURL.appendingPathComponent("report.json")) {
+                        ShareLink(item: reportURL) {
                             Label("Udostępnij raport", systemImage: "doc.text")
                         }
                     }

@@ -44,15 +44,15 @@ Kontener został uruchomiony na malinie przez `DOCKER_API_VERSION=1.43 docker co
 ## Przebieg testu
 
 1. Zainstaluj prototyp na iPadzie 10. generacji z iPadOS 27. Uruchom go i dotknij **Wybierz ekran i rozpocznij**. W systemowym oknie wybierz **cały ekran**; mikrofon na początek zostaw wyłączony.
-2. Przejdź do Teams i odtwórz 30–60 sekund głosu podczas połączenia przez głośnik iPada. Wróć do prototypu i wybierz **Zakończ i zapisz**. Udostępnij i odsłuchaj `system.m4a`.
+2. Przejdź do Teams i odtwórz 30–60 sekund głosu podczas połączenia przez głośnik iPada. Wróć do prototypu i wybierz **Zakończ i zapisz**. Udostępnij i odsłuchaj plik z końcówką `_system.m4a`.
 3. Powtórz ze słuchawkami. Następnie powtórz z włączonym mikrofonem w systemowym oknie i sprawdź oba pliki, w tym zachowanie po wyciszeniu i odciszeniu mikrofonu w Teams.
-4. Wyłącz Wi-Fi i dane komórkowe, wykonaj krótki test offline, a następnie ponów na kilku minutach po zmianie wyjścia audio. W `CaptureTests/<UUID>/report.json` sprawdź liczniki i błędy.
+4. Wyłącz Wi-Fi i dane komórkowe, wykonaj krótki test offline, a następnie ponów na kilku minutach po zmianie wyjścia audio. W `CaptureTests/<rok_miesiac_dzien_godzina_minuta_sekunda>/..._report.json` sprawdź liczniki i błędy. Pliki eksportowane do aplikacji Pliki mają nazwy z datą rozpoczęcia nagrania oraz końcówką `_system.m4a`, `_microphone.m4a` lub `_report.json`; nagrania z tej samej sekundy dostają dodatkowy numer.
 5. Odrębnie przetestuj darmową instalację oraz odświeżenie na docelowym iPadzie i malinie. Nie zakładaj, że zgodność AltServer-Linux z iPadOS 27 jest pewna.
 
 Po potwierdzeniu tych warunków rozwijamy zapis segmentowy, synchronizację z Raspberry Pi, transkrypcję i pełny interfejs. Jeśli cyfrowy strumień nie zawiera Teams lub darmowe odświeżanie nie działa, projekt zatrzymuje się na tej bramce i wymaga zmiany założeń.
 
 ## Ograniczenia prototypu
 
-Prototyp nie obsługuje sześciogodzinnych sesji ani odzyskiwania po nagłym zamknięciu. Może zużywać pamięć przy długim nagrywaniu i nie powinien służyć do zapisu ważnych wykładów. `system.m4a` oraz `microphone.m4a` są osobnymi plikami. Ich obecność i liczniki stanowią materiał diagnostyczny, nie dowód zgodności Teams z przechwytywaniem.
+Prototyp nie obsługuje sześciogodzinnych sesji ani odzyskiwania po nagłym zamknięciu. Może zużywać pamięć przy długim nagrywaniu i nie powinien służyć do zapisu ważnych wykładów. Pliki `_system.m4a` oraz `_microphone.m4a` są osobne. Ich obecność i liczniki stanowią materiał diagnostyczny, nie dowód zgodności Teams z przechwytywaniem.
 
 Źródła: [przykład Apple dla ScreenCaptureKit na iOS 27](https://developer.apple.com/documentation/screencapturekit/capturing-screen-content-on-ios), [Apple o darmowych profilach](https://developer.apple.com/help/account/basics/about-your-developer-account), [AltServer-Linux](https://github.com/NyaMisty/AltServer-Linux).
