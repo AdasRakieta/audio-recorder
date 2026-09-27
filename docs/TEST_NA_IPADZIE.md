@@ -45,12 +45,14 @@ Jeśli iloader nie widzi iPada, najpierw sprawdź kabel, komunikat **Zaufaj**, i
 
 ## 3. Instalacja Recorder Probe ze strony
 
-1. Na iPadzie włącz Tailscale. W Safari otwórz <https://malina.tail384b18.ts.net/audio/>. Upewnij się, że widzisz wersję `0.1.0 (1)`.
-2. Włącz LocalDevVPN, nie zamykając strony. Sprawdź, czy Safari nadal otwiera `source.json` pod podanym wyżej adresem. **Ten punkt jest testem współdziałania Tailscale z LocalDevVPN na iPadOS 27; nie został jeszcze potwierdzony.**
-3. Jeśli strona nadal działa, wybierz **Dodaj źródło w SideStore**. W SideStore powinno pojawić się źródło `Recorder Probe`. Otwórz jego aplikację i zainstaluj ją. Alternatywnie przycisk **Otwórz IPA w SideStore** przekazuje bezpośredni adres pakietu.
-4. Sprawdź, czy `Recorder Probe` widać na ekranie początkowym i w **My Apps** w SideStore. Zanotuj wyświetlaną liczbę dni do końca podpisu.
+Na tym iPadzie aktywowanie LocalDevVPN wyłącza Tailscale. SideStore wymaga LocalDevVPN podczas instalowania, aktualizowania i odświeżania, więc **nie próbuj utrzymywać obu VPN jednocześnie**. [Wymagania SideStore](https://docs.sidestore.io/docs/installation/prerequisites).
 
-Jeżeli po włączeniu LocalDevVPN Tailscale się rozłączy lub SideStore nie może pobrać IPA, nie uznawaj instalacji sieciowej za działającą. Na próbę pobierz **niepodpisane IPA** z Safari przy włączonym Tailscale i zapisz je w aplikacji **Pliki**. Następnie włącz LocalDevVPN i spróbuj zaimportować lokalny IPA w SideStore z **My Apps → +**. Tę ścieżkę też trzeba potwierdzić na urządzeniu; lista automatycznych aktualizacji przez prywatny URL może wymagać innego rozwiązania sieciowego. Zanotuj dokładny błąd i etap, na którym wystąpił.
+1. Na iPadzie włącz Tailscale. W Safari otwórz <https://malina.tail384b18.ts.net/audio/>. Upewnij się, że widzisz wersję `0.1.0 (1)`.
+2. Wybierz **Pobierz IPA do Plików**. Jeśli Safari tylko pokaże pobranie, otwórz **Pliki → Pobrane** i upewnij się, że znajduje się tam `RecorderProbe-0.1.0-1-unsigned.ipa`. To plik niepodpisany; samo pobranie go nie instaluje.
+3. Wyłącz Tailscale, włącz LocalDevVPN i pozostaw Wi-Fi aktywne.
+4. Otwórz **SideStore → My Apps → +** i wybierz pobrany IPA z aplikacji Pliki. Zaczekaj, aż SideStore go podpisze i zainstaluje. Sprawdź, czy `Recorder Probe` pojawił się na ekranie początkowym oraz w My Apps; zanotuj liczbę dni do końca podpisu.
+
+Źródło `source.json` i przycisk **Otwórz IPA w SideStore** wymagają, by SideStore mogło w trakcie instalacji pobrać plik z adresu Tailscale. Przy obecnym konflikcie VPN **nie traktujemy instalacji ani automatycznych aktualizacji z tego prywatnego URL jako działających**. Nowe wersje pobieraj tą samą metodą do Plików i importuj w SideStore. Odświeżenie już zainstalowanej aplikacji wykonuj z LocalDevVPN; nie wymaga otwierania strony maliny. Jeśli lokalny import albo odświeżenie się nie powiedzie, zanotuj dokładny komunikat.
 
 ## 4. Test nagrywania Teams
 
